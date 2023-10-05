@@ -23,13 +23,15 @@ export default class OrderRepository {
     const allRegisters = await this.getAll();
 
     console.log(await allRegisters.toArray());
-    for await (const doc of allRegisters) {
-      console.dir(doc);
-    }
 
     // Update order
     await this.updateOrder("Adalberto Alves", "Finalizado");
     await this.updateOrder("Fulano de Tal", "Finalizado");
+
+    // Get all orders
+    const allRegistersUpdate = await this.getAll();
+
+    console.log(await allRegistersUpdate.toArray());
 
     // Delete orders
     await this.deleteOrder("Fulano de Tal");
@@ -59,9 +61,19 @@ export default class OrderRepository {
 
   async updateOrder({ customerName, status }) {
     try {
-      return await this.ordersCollection.updateOne(
+      let x = await this.ordersCollection.findOne({
+        customerName: {
+          $eq: customerName,
+        },
+      });
+
+      console.log("Testando Find: ", x);
+
+      return await this.ordersCollection.findOneAndUpdate(
         {
-          customerName,
+          customerName: {
+            $eq: customerName,
+          },
         },
         {
           $set: {
