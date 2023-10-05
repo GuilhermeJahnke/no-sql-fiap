@@ -14,9 +14,9 @@ class UserRepository {
         fullName,
       };
 
-      userCollections.insertOne(newUser);
+      await userCollections.insertOne(newUser);
 
-      return console.log("Usuário criado com sucesso!");
+      return console.log("Usuario criado com sucesso!");
     } catch (error) {
       return console.log(error);
     }
@@ -26,7 +26,7 @@ class UserRepository {
     try {
       const userCollections = this.client.collection("user");
 
-      const users = userCollections.find({});
+      const users = await userCollections.find({});
 
       return users;
     } catch (error) {
@@ -34,37 +34,49 @@ class UserRepository {
     }
   }
 
-  async editUser(document, { cpf, email, password, fullName }) {
+  async getByCpf(cpf) {
     try {
       const userCollections = this.client.collection("user");
 
-      const newUser = {
-        cpf,
-        email,
-        password,
-        fullName,
-      };
+      const user = await userCollections.findOne({ cpf: cpf });
 
-      userCollections.updateOne(
-        {
-          cpf: document,
-        },
-        newUser
-      );
-
-      return console.log("Usuário atualizado com sucesso!");
+      return user;
     } catch (error) {
       return console.log(error);
     }
   }
 
-  async deleteUser({ cpf }) {
+  async editUser({ id, cpf, email, password, fullName }) {
     try {
       const userCollections = this.client.collection("user");
 
-      userCollections.deleteOne({ cpf });
+      await userCollections.findOneAndUpdate(
+        {
+          "_id": id,
+        },
+        {
+          $set: {
+            "cpf": cpf,
+            "email": email,
+            "password": password,
+            "fullName": fullName,
+          },
+        }
+      );
 
-      return console.log("Usuário deletado com sucesso!");
+      return console.log("Usuario atualizado com sucesso!");
+    } catch (error) {
+      return console.log(error);
+    }
+  }
+
+  async deleteUser(id) {
+    try {
+      const userCollections = this.client.collection("user");
+     
+      await userCollections.findOneAndDelete({ "_id" : id });
+
+      return console.log("Usuario deletado com sucesso!");
     } catch (error) {
       return console.log(error);
     }
