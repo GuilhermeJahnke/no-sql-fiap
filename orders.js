@@ -1,8 +1,41 @@
-class OrderRepository {
+export default class OrderRepository {
   constructor({ client }) {
     this.ordersCollection = client.collection("orders");
   }
 
+  async execute() {
+    // Orders
+    // Create 3 orders
+    await this.createOrder({
+      customerName: "Adalberto Alves",
+      status: "Pendente",
+    });
+    await this.createOrder({
+      customerName: "Fulano de Tal",
+      status: "Pendente",
+    });
+    await this.createOrder({
+      customerName: "Ciclano de Tal",
+      status: "Pendente",
+    });
+
+    // Get all orders
+    const allRegisters = await this.getAll();
+
+    console.log(await allRegisters.toArray());
+    for await (const doc of allRegisters) {
+      console.dir(doc);
+    }
+
+    // Update order
+    await this.updateOrder("Adalberto Alves", "Finalizado");
+    await this.updateOrder("Fulano de Tal", "Finalizado");
+
+    // Delete orders
+    await this.deleteOrder("Fulano de Tal");
+    await this.deleteOrder("Ciclano de Tal");
+    await this.deleteOrder("Adalberto Alves");
+  }
   async getAll() {
     try {
       const orders = await this.ordersCollection.find({});
@@ -15,14 +48,10 @@ class OrderRepository {
 
   async createOrder({ customerName, status }) {
     try {
-      const newOrder = {
+      return await this.ordersCollection.insertOne({
         customerName,
         status,
-      };
-
-      const response = await this.orderCollections.insertOne(newOrder);
-
-      return response;
+      });
     } catch (error) {
       return console.log(error);
     }
@@ -30,33 +59,26 @@ class OrderRepository {
 
   async updateOrder({ customerName, status }) {
     try {
-      const newOrder = {
-        customerName,
-        status,
-      };
-
-      const response = await this.orderCollections.updateOne(
+      return await this.ordersCollection.updateOne(
         {
-          id: newOrder.id,
+          customerName,
         },
-        newOrder
+        {
+          $set: {
+            status,
+          },
+        }
       );
-
-      return response;
     } catch (error) {
       return console.log(error);
     }
   }
 
-  async deleteOrder(id) {
+  async deleteOrder(customerName) {
     try {
-      const response = await this.orderCollections.deleteOne({ id });
-
-      return response;
+      return await this.ordersCollection.deleteOne({ customerName });
     } catch (error) {
       return console.log(error);
     }
   }
 }
-
-module.exports = OrderRepository;
