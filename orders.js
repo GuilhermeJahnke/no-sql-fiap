@@ -1,48 +1,62 @@
-const MongoClient = require('mongodb').MongoClient;
+class OrderRepository {
+  constructor({ client }) {
+    this.ordersCollection = client.collection("orders");
+  }
 
-// Configurações do servidor MongoDB
-const url = 'mongodb://localhost:27017'; // URL do servidor MongoDB
-const dbName = 'mydatabase'; // Nome do banco de dados
+  async getAll() {
+    try {
+      const orders = await this.ordersCollection.find({});
 
-// Função para realizar operações CRUD
-async function performCRUDOperations() {
-  const client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
+      return orders;
+    } catch (error) {
+      return console.log(error);
+    }
+  }
 
-  try {
-    await client.connect(); // Conecta ao servidor MongoDB
+  async createOrder({ customerName, status }) {
+    try {
+      const newOrder = {
+        customerName,
+        status,
+      };
 
-    // Coleção 3: Pedidos
-    const ordersCollection = client.db(dbName).collection('orders');
+      const response = await this.orderCollections.insertOne(newOrder);
 
-    console.log('Produto atualizado:', updateProductResult.modifiedCount);
-    // Criação de Pedido
-    const newOrder = {
-      customerName: 'Alice Smith',
-      items: [
-        { productId: foundProduct._id, quantity: 2 },
-        // Adicione mais itens aqui, conforme necessário
-      ],
-      status: 'Pending'
-    };
-    const insertOrderResult = await ordersCollection.insertOne(newOrder);
-    console.log('Pedido criado:', insertOrderResult.insertedId);
+      return response;
+    } catch (error) {
+      return console.log(error);
+    }
+  }
 
-    // Consulta de Pedido
-    const foundOrder = await ordersCollection.findOne({ customerName: 'Alice Smith' });
-    console.log('Pedido encontrado:', foundOrder);
+  async updateOrder({ customerName, status }) {
+    try {
+      const newOrder = {
+        customerName,
+        status,
+      };
 
-    // Atualização de Pedido
-    const updateOrderResult = await ordersCollection.updateOne(
-      { customerName: 'Alice Smith' },
-      { $set: { status: 'Shipped' } }
-    );
-    console.log('Pedido atualizado:', updateOrderResult.modifiedCount);
+      const response = await this.orderCollections.updateOne(
+        {
+          id: newOrder.id,
+        },
+        newOrder
+      );
 
-  } catch (error) {
-    console.error('Erro:', error);
-  } finally {
-    client.close(); // Fecha a conexão com o banco de dados
+      return response;
+    } catch (error) {
+      return console.log(error);
+    }
+  }
+
+  async deleteOrder(id) {
+    try {
+      const response = await this.orderCollections.deleteOne({ id });
+
+      return response;
+    } catch (error) {
+      return console.log(error);
+    }
   }
 }
 
-performCRUDOperations();
+module.exports = OrderRepository;

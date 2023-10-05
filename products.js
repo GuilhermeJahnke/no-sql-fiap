@@ -1,45 +1,65 @@
-const MongoClient = require('mongodb').MongoClient;
+class ProductRepository {
+  constructor({ product }) {
+    this.product = product;
+  }
 
-// Configurações do servidor MongoDB
-const url = 'mongodb://localhost:27017'; // URL do servidor MongoDB
-const dbName = 'mydatabase'; // Nome do banco de dados
+  async createProduct({ nameOfProduct, price }) {
+    try {
+      const productCollections = this.product.collection("product");
 
-// Função para realizar operações CRUD
-async function performCRUDOperations() {
-  const client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
+      const newProduct = {
+        nameOfProduct,
+        price,
+      };
 
-  try {
-    await client.connect(); // Conecta ao servidor MongoDB
+      productCollections.insertOne(newProduct);
 
-    // Coleção 2: Produtos
-    const productsCollection = client.db(dbName).collection('products');
+      return console.log("Produto criado com sucesso!");
+    } catch (error) {
+      return console.log(error);
+    }
+  }
 
-    // Criação de Produto
-    const newProduct = {
-      name: 'Product A',
-      description: 'This is product A',
-      price: 19.99,
-      stockQuantity: 100
-    };
+  async getAll() {
+    try {
+      const productCollections = this.product.collection("product");
 
-    const insertProductResult = await productsCollection.insertOne(newProduct);
-    console.log('Produto criado:', insertProductResult.insertedId);
+      const product = productCollections.find({});
 
-    // Consulta de Produto
-    const foundProduct = await productsCollection.findOne({ name: 'Product A' });
-    console.log('Produto encontrado:', foundProduct);
+      return product;
+    } catch (error) {
+      return console.log(error);
+    }
+  }
 
-    // Atualização de Produto
-    const updateProductResult = await productsCollection.updateOne(
-      { name: 'Product A' },
-      { $set: { price: 24.99 } }
-    );
+  async editProduct({ nameOfProduct, price }) {
+    try {
+      const newProduct = {
+        nameOfProduct,
+        price,
+      };
 
-  } catch (error) {
-    console.error('Erro:', error);
-  } finally {
-    client.close(); // Fecha a conexão com o banco de dados
+      const productCollections = this.product.collection("product");
+
+      productCollections.updateOne(newProduct);
+
+      return console.log("Produto atualizado com sucesso!");
+    } catch (error) {
+      return console.log(error);
+    }
+  }
+
+  async deleteProduct({ nameOfProduct }) {
+    try {
+      const productCollections = this.product.collection("product");
+
+      productCollections.deleteOne({ nameOfProduct });
+
+      return console.log("Produto deletado com sucesso!");
+    } catch (error) {
+      return console.log(error);
+    }
   }
 }
 
-performCRUDOperations();
+module.exports = ProductRepository;
