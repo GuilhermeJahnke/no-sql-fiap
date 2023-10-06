@@ -1,4 +1,4 @@
-# **Projeto CRUD - Faculdade XXXX***
+# **Projeto CRUD - Faculdade FIAP**
 
 ## Descrição do Projeto
 Este projeto consiste em um sistema CRUD (Create, Read, Update, Delete) desenvolvido para a FIAP. O sistema gerencia três tabelas: Products, Users e Orders. Além disso, todos os logs do sistema são armazenados em uma pasta chamada `LOGS`.
