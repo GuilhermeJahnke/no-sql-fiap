@@ -5,7 +5,11 @@ export default class OrderRepository {
 
   async execute() {
     // Orders
+
+    console.log("\nConectado a tabela orders com sucesso");
+    
     // Create 3 orders
+    console.log("\nIniciando a criacao de 3 orders com o metodo createOrder\n")
     await this.createOrder({
       customerName: "Adalberto Alves",
       status: "Pendente",
@@ -19,24 +23,43 @@ export default class OrderRepository {
       status: "Pendente",
     });
 
+    console.log("\nIniciando a busca de todos os orders com o metodo getAll\n");
+
     // Get all orders
     const allRegisters = await this.getAll();
 
     console.log(await allRegisters.toArray());
 
     // Update order
-    await this.updateOrder("Adalberto Alves", "Finalizado");
-    await this.updateOrder("Fulano de Tal", "Finalizado");
+    console.log("\nIniciando a edicao do order com o metodo updateOrder\n");
+    await this.updateOrder({
+      customerName: "Adalberto Alves", 
+      status: "Finalizado"
+    });
+
+    await this.updateOrder({
+      customerName: "Fulano de Tal", 
+      status: "Finalizado"
+    });
 
     // Get all orders
+    console.log("Iniciando a busca de todos os orders com o metodo getAll\n");
     const allRegistersUpdate = await this.getAll();
 
     console.log(await allRegistersUpdate.toArray());
 
     // Delete orders
+    console.log("\nDeletando todas as orders com o metodo deleteOrder\n");
     await this.deleteOrder("Fulano de Tal");
     await this.deleteOrder("Ciclano de Tal");
     await this.deleteOrder("Adalberto Alves");
+
+    // Get all orders
+    console.log("\nIniciando a busca de todos os orders com o metodo getAll\n");
+    const allRegistersDelete = await this.getAll();
+    console.log(await allRegistersDelete.toArray());
+
+    console.log("\nFinalizando a execucao do OrderRepository");
   }
   async getAll() {
     try {
@@ -50,10 +73,12 @@ export default class OrderRepository {
 
   async createOrder({ customerName, status }) {
     try {
-      return await this.ordersCollection.insertOne({
+      await this.ordersCollection.insertOne({
         customerName,
         status,
       });
+
+      return console.log("Order criado com sucesso!");
     } catch (error) {
       return console.log(error);
     }
@@ -61,15 +86,14 @@ export default class OrderRepository {
 
   async updateOrder({ customerName, status }) {
     try {
-      let x = await this.ordersCollection.findOne({
-        customerName: {
-          $eq: customerName,
-        },
-      });
+      const order = {
+        customerName,
+        status,
+      }
 
-      console.log("Testando Find: ", x);
+      console.log("Atualizando o order com estes dados:", JSON.stringify(order, null, 2));
 
-      return await this.ordersCollection.findOneAndUpdate(
+      await this.ordersCollection.findOneAndUpdate(
         {
           customerName: {
             $eq: customerName,
@@ -81,6 +105,8 @@ export default class OrderRepository {
           },
         }
       );
+
+      return console.log("\nOrder atualizado com sucesso!\n")
     } catch (error) {
       return console.log(error);
     }
@@ -88,7 +114,8 @@ export default class OrderRepository {
 
   async deleteOrder(customerName) {
     try {
-      return await this.ordersCollection.deleteOne({ customerName });
+      await this.ordersCollection.deleteOne({ customerName });
+      return console.log("Order deletado com sucesso!");
     } catch (error) {
       return console.log(error);
     }

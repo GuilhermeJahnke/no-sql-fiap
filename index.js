@@ -18,13 +18,14 @@ import UserRepository from "./user.js";
   try {
     const db = client.db("fiap");
     console.log("Connected correctly to server");
+    
     // Order
     const orderRepositry = new OrderRepository({ client: db });
     await orderRepositry.execute();
 
     // User
-    // const userRepositry = new UserRepository({ client: db });
-    // await userRepositry.execute();
+    const userRepositry = new UserRepository({ client: db });
+    await userRepositry.execute();
 
     // Products
   } catch (error) {
