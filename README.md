@@ -48,7 +48,7 @@ As chaves do banco de dados já estão vinculadas ao projeto. Portanto, não é 
     }
   ```
 
-  ---
+---
 ### Orders
 
 - **Document:**
@@ -60,7 +60,7 @@ As chaves do banco de dados já estão vinculadas ao projeto. Portanto, não é 
   }
   ```
 
-  ---
+---
 
 ## **Pessoas Autoras:**
 
