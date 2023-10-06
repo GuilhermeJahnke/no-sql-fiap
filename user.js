@@ -1,11 +1,85 @@
 class UserRepository {
   constructor({ client }) {
-    this.client = client;
+    this.client = client.collection("user");
+  }
+
+  async execute() {
+    // ConnectDB
+    console.log("\nConectado a tabela usuario com sucesso");
+
+    // CREATE
+    console.log("\nIniciando a criacao de 3 Usuarios com o metodo createUser\n");
+    await this.createUser({
+      fullName: "Adalberto Alves",
+      email: "adalbertoAlves@teste.com",
+      password: "123456",
+      cpf: "12345678909",
+    });
+    await this.createUser({
+      fullName: "Fulano de Tal",
+      email: "fulanodetal@teste.com",
+      password: "123456",
+      cpf: "43542227013",
+    });
+    await this.createUser({
+      fullName: "Ciclano de Tal",
+      email: "ciclanodetal@teste.com",
+      password: "123456",
+      cpf: "73456377002",
+    });
+
+    console.log(
+      "\nIniciando a busca de todos os usuarios com o metodo getAll\n"
+    );
+
+    let firstSearch = await this.getAll();
+
+    console.log(await firstSearch.toArray());
+
+    // EDIT
+    console.log("\nIniciando a edicao do usuario com o metodo editUser\n");
+    await this.editUser({
+      fullName: "FIAP teste ",
+      email: "fiapteste@teste.com",
+      password: "123456",
+      cpf: "12345678909",
+    });
+    await this.editUser({
+      fullName: "FIAP teste 2",
+      email: "fiapteste2@teste.com",
+      password: "123456",
+      cpf: "43542227013",
+    });
+
+    // GETALL
+    console.log(
+      "Iniciando a busca de todos os usuarios com o metodo getAll\n"
+    );
+    let users = await this.getAll();
+
+    console.log(await users.toArray());
+
+
+    // DELETE
+    console.log("\nDeletando todos os usuarios criado\n");
+    
+    await this.deleteUser("12345678909");
+    await this.deleteUser("43542227013");
+    await this.deleteUser("73456377002");
+
+    console.log("\nIniciando a busca dos usuarios com o metodo getAll\n");
+    
+    let finalUsers = await this.getAll();
+
+    console.log("Usuarios encontrados\n");
+
+    console.log(await finalUsers.toArray())
+
+    console.log("\nFinalizando a execucao do UserRepository\n");
   }
 
   async createUser({ cpf, email, password, fullName }) {
     try {
-      const userCollections = this.client.collection("user");
 
       const newUser = {
         cpf,
@@ -14,7 +88,7 @@ class UserRepository {
         fullName,
       };
 
-      await userCollections.insertOne(newUser);
+      await this.client.insertOne(newUser);
 
       return console.log("Usuario criado com sucesso!");
     } catch (error) {
@@ -24,9 +98,8 @@ class UserRepository {
 
   async getAll() {
     try {
-      const userCollections = this.client.collection("user");
 
-      const users = await userCollections.find({});
+      const users = await this.client.find({});
 
       return users;
     } catch (error) {
@@ -34,47 +107,41 @@ class UserRepository {
     }
   }
 
-  async getByCpf(cpf) {
+  async editUser({ cpf, email, password, fullName }) {
     try {
-      const userCollections = this.client.collection("user");
+      let user = {
+        cpf,
+        email,
+        password,
+        fullName
+      }
 
-      const user = await userCollections.findOne({ cpf: cpf });
+      console.log("Atualizando o usuario com estes dados:", JSON.stringify(user, null, 2));
 
-      return user;
-    } catch (error) {
-      return console.log(error);
-    }
-  }
-
-  async editUser({ id, cpf, email, password, fullName }) {
-    try {
-      const userCollections = this.client.collection("user");
-
-      await userCollections.findOneAndUpdate(
+      await this.client.findOneAndUpdate(
         {
-          "_id": id,
+          cpf: cpf,
         },
         {
           $set: {
-            "cpf": cpf,
-            "email": email,
-            "password": password,
-            "fullName": fullName,
+            cpf: cpf,
+            email: email,
+            password: password,
+            fullName: fullName,
           },
         }
       );
 
-      return console.log("Usuario atualizado com sucesso!");
+      return console.log("\nUsuario atualizado com sucesso!\n");
     } catch (error) {
       return console.log(error);
     }
   }
 
-  async deleteUser(id) {
+  async deleteUser(cpf) {
     try {
-      const userCollections = this.client.collection("user");
-     
-      await userCollections.findOneAndDelete({ "_id" : id });
+
+      await this.client.findOneAndDelete({ cpf: cpf });
 
       return console.log("Usuario deletado com sucesso!");
     } catch (error) {
