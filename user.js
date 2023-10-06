@@ -1,6 +1,6 @@
 class UserRepository {
   constructor({ client }) {
-    this.client = client.collection("user");
+    this.userCollection = client.collection("user");
   }
 
   async execute() {
@@ -88,7 +88,7 @@ class UserRepository {
         fullName,
       };
 
-      await this.client.insertOne(newUser);
+      await this.userCollection.insertOne(newUser);
 
       return console.log("Usuario criado com sucesso!");
     } catch (error) {
@@ -99,7 +99,7 @@ class UserRepository {
   async getAll() {
     try {
 
-      const users = await this.client.find({});
+      const users = await this.userCollection.find({});
 
       return users;
     } catch (error) {
@@ -118,7 +118,7 @@ class UserRepository {
 
       console.log("Atualizando o usuario com estes dados:", JSON.stringify(user, null, 2));
 
-      await this.client.findOneAndUpdate(
+      await this.userCollection.findOneAndUpdate(
         {
           cpf: cpf,
         },
@@ -141,7 +141,7 @@ class UserRepository {
   async deleteUser(cpf) {
     try {
 
-      await this.client.findOneAndDelete({ cpf: cpf });
+      await this.userCollection.findOneAndDelete({ cpf: cpf });
 
       return console.log("Usuario deletado com sucesso!");
     } catch (error) {

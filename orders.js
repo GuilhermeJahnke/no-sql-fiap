@@ -61,24 +61,26 @@ export default class OrderRepository {
 
     console.log("\nFinalizando a execucao do OrderRepository");
   }
-  async getAll() {
-    try {
-      const orders = await this.ordersCollection.find({});
 
-      return orders;
-    } catch (error) {
-      return console.log(error);
-    }
-  }
-
+  
   async createOrder({ customerName, status }) {
     try {
       await this.ordersCollection.insertOne({
         customerName,
         status,
       });
-
+      
       return console.log("Order criado com sucesso!");
+    } catch (error) {
+      return console.log(error);
+    }
+  } 
+  
+  async getAll() {
+    try {
+      const orders = await this.ordersCollection.find({});
+
+      return orders;
     } catch (error) {
       return console.log(error);
     }
