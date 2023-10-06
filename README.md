@@ -28,11 +28,11 @@ As chaves do banco de dados já estão vinculadas ao projeto. Portanto, não é 
 - **Document:**
   ```json
   {
-  "_id": "ObjectId",
-  "cpf": "string",
-  "email": "string",
-  "password": "string",
-  "fullname": "string",
+    "_id": "ObjectId",
+    "cpf": "string",
+    "email": "string",
+    "password": "string",
+    "fullname": "string",
   }
   ```
 
@@ -42,11 +42,11 @@ As chaves do banco de dados já estão vinculadas ao projeto. Portanto, não é 
 
 - **Document:**
   ```json
-    {
-      "_id": "ObjectId",
-      "name_of_product": "string",
-      "price": "number",
-    }
+  {
+    "_id": "ObjectId",
+    "name_of_product": "string",
+    "price": "number",
+  }
   ```
 
 ---
@@ -56,9 +56,9 @@ As chaves do banco de dados já estão vinculadas ao projeto. Portanto, não é 
 - **Document:**
   ```json
   {
-   "_id":"ObjectId",
-   "customerName":"string",
-   "status":"string",
+    "_id":"ObjectId",
+    "customerName":"string",
+    "status":"string",
   }
   ```
 
