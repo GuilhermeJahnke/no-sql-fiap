@@ -1,6 +1,7 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
 import OrderRepository from "./orders.js";
 import UserRepository from "./user.js";
+import ProductRepository from "./products.js";
 
 (async () => {
   const uri =
@@ -28,6 +29,9 @@ import UserRepository from "./user.js";
     await userRepositry.execute();
 
     // Products
+    const productRepositry = new ProductRepository({ client: db });
+    await productRepositry.execute();
+
   } catch (error) {
     console.log(error);
   } finally {
