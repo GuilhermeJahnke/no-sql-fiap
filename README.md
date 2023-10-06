@@ -37,6 +37,7 @@ As chaves do banco de dados já estão vinculadas ao projeto. Portanto, não é 
   ```
 
 ---
+
  ### Products
 
 - **Document:**
@@ -49,6 +50,7 @@ As chaves do banco de dados já estão vinculadas ao projeto. Portanto, não é 
   ```
 
 ---
+
 ### Orders
 
 - **Document:**
